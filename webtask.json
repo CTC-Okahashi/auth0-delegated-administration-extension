@@ -33,10 +33,10 @@
       "required": false
     },
     "CDN_PATH": {
- 		  "description": "Path to your CDN",
- 		  "example": "https://",
- 		  "required": false
- 		},
+      "description": "Path to your CDN",
+      "example": "https://",
+      "required": false
+    },
     "FAVICON_PATH": {
       "description": "Path to custom favicon",
       "example": "https://cdn.fabrikam.com/static/extensions/theme/favicon.png",
