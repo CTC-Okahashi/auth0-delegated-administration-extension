@@ -49,8 +49,8 @@ export default class UserDevices extends Component {
           <TableHeader>
             <TableColumn width="3%"/>
             // カスタム追加：画面表示の項目名変更 開始
-            <TableColumn width="35%">{languageDictionary.clientNameColumnHeader || 'Client'}</TableColumn> 
- 		        <TableColumn width="35%">{languageDictionary.deviceNameColumnHeader || 'Device'}</TableColumn>
+            <TableColumn width="35%">{languageDictionary.clientNameColumnHeader || 'Client'}</TableColumn>
+            <TableColumn width="35%">{languageDictionary.deviceNameColumnHeader || 'Device'}</TableColumn>
             // カスタム追加：画面表示の項目名変更 終了
             <TableColumn width="27%">
               // カスタム追加：画面表示の項目名変更 開始
