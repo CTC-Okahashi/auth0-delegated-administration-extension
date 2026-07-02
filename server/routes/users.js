@@ -345,7 +345,6 @@ export default (storage, scriptManager) => {
                   ? [...new Set(methods.map(m => m.type).filter(Boolean))]
                   : null;
                 
-                  // カスタム追加：連絡先電話番号を取得　開始
                   if (Array.isArray(methods)) {
                     const phoneData = methods.find(methods=>method.type==='phone');
 
@@ -353,7 +352,6 @@ export default (storage, scriptManager) => {
                       data.user.phone_number = phoneData.phone_number;
                     }
                   }
-                  // カスタム追加：連絡先電話番号を取得　終了
 
                 return res.json(data);
               });
@@ -566,7 +564,6 @@ export default (storage, scriptManager) => {
    * Get all devices for the user.
    */
   api.get('/:id/devices', verifyUserAccess('read:devices', scriptManager), (req, res, next) => {
-    // カスタム追加：デバイス情報集計方法変更　開始
     req.auth0.deviceCredentials.getAll({ user_id: req.params.id })
       .then(devices1 => { 
         req.auth0.deviceCredentials.getAll({ user_id: req.params.id, type: "rotating_refresh_token" }) 
@@ -617,7 +614,6 @@ export default (storage, scriptManager) => {
  		      }) 
  		      .catch(next); 
  		    }) 
-    // カスタム追加：デバイス情報集計方法変更　終了
       .catch(next);
   });
 
@@ -627,7 +623,6 @@ export default (storage, scriptManager) => {
   api.get('/:id/logs', verifyUserAccess('read:logs', scriptManager), (req, res, next) => {
     getApiToken(req)
       .then((accessToken) => {
-        // カスタム追加：ログ情報の表示制御　開始
         //アプリ管理者のapp_metadata内のClientIDを取得
         let app_list = req.user.app_metadata.managed_apps;
  		 
@@ -640,13 +635,10 @@ export default (storage, scriptManager) => {
  		        query += 'client_id:' + app_list[i] + ' OR ';
  		      }
  		    }
-        // カスタム追加：ログ情報の表示制御　終了
 
         const options = {
-          // カスタム追加：ログ情報の表示制御　開始
           //qパラメータにアプリ管理者が管理するアプリのclient_idを指定する
           uri: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${encodeURIComponent(req.params.id)}/logs?q=${query}`,
-          // カスタム追加：ログ情報の表示制御　終了
           headers: {
             authorization: `Bearer ${accessToken}`
           },

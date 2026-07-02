@@ -48,25 +48,19 @@ export default class UserDevices extends Component {
         <Table>
           <TableHeader>
             <TableColumn width="3%"/>
-            // カスタム追加：画面表示の項目名変更 開始
             <TableColumn width="35%">{languageDictionary.clientNameColumnHeader || 'Client'}</TableColumn>
             <TableColumn width="35%">{languageDictionary.deviceNameColumnHeader || 'Device'}</TableColumn>
-            // カスタム追加：画面表示の項目名変更 終了
             <TableColumn width="27%">
-              // カスタム追加：画面表示の項目名変更 開始
               {languageDictionary.deviceNumberTokensColumnHeader || 'Number of Refresh Tokens'}
-              // カスタム追加：画面表示の項目名変更 終了
             </TableColumn>
           </TableHeader>
           <TableBody>
             {Object.keys(devices).sort().map((device) =>
               <TableRow key={device}>
                 <TableIconCell color="green" icon="243"/>
-                // カスタム追加：画面表示の項目名変更 開始
                 <TableTextCell>{devices[device].clientName}</TableTextCell>
                 <TableTextCell>{devices[device].deviceName}</TableTextCell>
                 <TableTextCell>{devices[device].count}</TableTextCell>
-                // カスタム追加：画面表示の項目名変更 終了
               </TableRow>
             )}
           </TableBody>
