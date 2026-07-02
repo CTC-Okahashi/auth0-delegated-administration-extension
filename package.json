@@ -85,7 +85,8 @@
       "safe-eval",
       "express-conditional-middleware",
       "pino",
-      "formidable"
+      "formidable",
+      "axios"
     ],
     "settings": {
       "WARN_DB_SIZE": 409600,
