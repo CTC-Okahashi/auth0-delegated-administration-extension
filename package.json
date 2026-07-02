@@ -7,6 +7,7 @@
   },
   "main": "server.js",
   "scripts": {
+    "postinstall": "patch-package",
     "clean": "rimraf ./dist",
     "validate": "a0-ext validate ./package.json",
     "package": "a0-ext package --client ./dist/client/ --out ./dist",
@@ -79,29 +80,12 @@
         ]
       }
     },
-    "externals": [
-      "async@3.2.4",
-      "bluebird@3.7.2",
-      "body-parser@1.20.2",
-      "cookie-parser@1.4.6",
-      "ejs@3.1.9",
-      "express@4.18.2",
-      "jsonwebtoken@9.0.1",
-      "jwks-rsa@3.0.1",
-      "lodash@4.17.21",
-      "lru-memoizer@1.10.0",
-      "moment@2.29.4",
-      "morgan@1.10.0",
-      "qs@6.11.2",
-      "request@2.88.2",
-      "superagent@8.0.9",
-      "uuid@9.0.0",
-      "winston@3.10.0"
-    ],
+    "externals": [],
     "excluded": [
       "safe-eval",
       "express-conditional-middleware",
-      "pino"
+      "pino",
+      "formidable"
     ],
     "settings": {
       "WARN_DB_SIZE": 409600,
@@ -234,6 +218,7 @@
     "nock": "^11.9.1",
     "nodemon": "^1.11.0",
     "nyc": "^13.1.0",
+    "patch-package": "^8.0.1",
     "postcss-focus": "^3.0.0",
     "postcss-loader": "^3.0.0",
     "postcss-reporter": "^5.0.0",

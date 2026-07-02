@@ -1,0 +1,23 @@
+diff --git a/node_modules/auth0-extensions-cli/lib/client-config.js b/node_modules/auth0-extensions-cli/lib/client-config.js
+index 47c8987..f6ac05e 100644
+--- a/node_modules/auth0-extensions-cli/lib/client-config.js
++++ b/node_modules/auth0-extensions-cli/lib/client-config.js
+@@ -1,7 +1,7 @@
+ const path = require('path');
+ const webpack = require('webpack');
+ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
++const TerserPlugin = require('terser-webpack-plugin');
+ const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
+
+ const productionMode = 'production';
+@@ -141,7 +141,7 @@ module.exports = ({ name, version }, rootPath, mode, entry, destination) => {
+     case productionMode:
+       config.optimization.minimizer = [
+-        new UglifyJsPlugin({
++        new TerserPlugin({
+-          uglifyOptions: {
++          terserOptions: {
+             mangle: true,
+             output: {
+               comments: false
