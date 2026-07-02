@@ -73,7 +73,9 @@ const userDevices = createReducer(fromJS(initialState.devices), {
     }),
   [constants.FETCH_USER_DEVICES_FULFILLED]: (state, action) => {
     const devices = action.payload.data.devices.reduce((map, device) => {
-      map[device.device_name] = (map[device.device_name] || 0) + 1;
+      // カスタム追加：Device情報表示変更　開始
+      map[`${device.client_id}_${device.device_name}`] = {count:(map[`${device.client_id}_${device.device_name}`]?map[`${device.client_id}_${device.device_name}`].count:0) + 1, clientName:device.client_name,deviceName:device.device_name};
+      // カスタム追加：Device情報表示変更　終了
       return map;
     }, { });
 
