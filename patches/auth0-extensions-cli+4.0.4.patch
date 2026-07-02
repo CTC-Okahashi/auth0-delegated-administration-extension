@@ -1,0 +1,78 @@
+diff --git a/node_modules/auth0-extensions-cli/lib/client-config.js b/node_modules/auth0-extensions-cli/lib/client-config.js
+index 47c8987..272ee60 100644
+--- a/node_modules/auth0-extensions-cli/lib/client-config.js
++++ b/node_modules/auth0-extensions-cli/lib/client-config.js
+@@ -3,11 +3,31 @@ const webpack = require('webpack');
+ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+ const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
++const _ = require('lodash');
+
+ const productionMode = 'production';
+ const developmentMode = 'development';
+
+-module.exports = ({ name, version }, rootPath, mode, entry, destination) => {
++const excludeModules = list =>
++  (modulePath) => {
++    if (modulePath.indexOf('node_modules') < 0) {
++      return false;
++    }
++
++    let isIncluded = true;
++
++    _.each(list, (module) => {
++      if (modulePath.indexOf(path.join('node_modules', module)) >= 0) {
++        isIncluded = false;
++      }
++    });
++
++    return isIncluded;
++  };
++
++module.exports = (pkg, rootPath, mode, entry, destination) => {
++  const { name, version } = pkg;
++  const excluded = (pkg['auth0-extension'] && pkg['auth0-extension'].excluded) || [];
+   const config = {
+     mode,
+
+@@ -43,6 +63,7 @@ module.exports = ({ name, version }, rootPath, mode, entry, destination) => {
+                   targets: {
+                     browsers: [ 'last 2 versions' ]
+                   },
++                  modules: 'commonjs',
+                   shippedProposals: true
+                 } ],
+                 '@babel/preset-react'
+@@ -54,10 +75,10 @@ module.exports = ({ name, version }, rootPath, mode, entry, destination) => {
+                 '@babel/plugin-transform-runtime',
+                 '@babel/plugin-syntax-dynamic-import'
+               ],
+-              ignore: [ './node_modules/**/*.js' ]
++              babelrc: false
+             }
+           },
+-          exclude: path.join(rootPath, 'node_modules/')
++          exclude: excludeModules(excluded)
+         },
+         {
+           test: /\.(png|ttf|svg|jpg|gif)/,
+diff --git a/node_modules/auth0-extensions-cli/lib/config.js b/node_modules/auth0-extensions-cli/lib/config.js
+index fed5db1..dede09a 100644
+--- a/node_modules/auth0-extensions-cli/lib/config.js
++++ b/node_modules/auth0-extensions-cli/lib/config.js
+@@ -86,6 +86,7 @@ module.exports = (pkg, rootPath, args, ext) => {
+               targets: {
+                 node: nodeTarget
+               },
++              modules: 'commonjs',
+               shippedProposals: true
+             }]
+           ],
+@@ -149,6 +150,7 @@ module.exports = (pkg, rootPath, args, ext) => {
+     },
+     plugins: activePlugins,
+     resolve: {
++      mainFields: [ 'main' ],
+       modules: [
+         'node_modules',
+         path.join(rootPath, './node_modules/')
