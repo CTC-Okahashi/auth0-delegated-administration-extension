@@ -23,7 +23,7 @@ index 47c8987..e526168 100644
              output: {
                comments: false
 diff --git a/node_modules/auth0-extensions-cli/lib/config.js b/node_modules/auth0-extensions-cli/lib/config.js
-index fed5db1..27e0ae8 100644
+index fed5db1..b65a04f 100644
 --- a/node_modules/auth0-extensions-cli/lib/config.js
 +++ b/node_modules/auth0-extensions-cli/lib/config.js
 @@ -1,7 +1,7 @@
@@ -35,7 +35,7 @@ index fed5db1..27e0ae8 100644
  const Webpack = require('webpack');
 
  function convertDependenciesToCommonJS(dependencies) {
-@@ -103,8 +103,8 @@ module.exports = (pkg, rootPath, args, ext) => {
+@@ -103,14 +103,11 @@ module.exports = (pkg, rootPath, args, ext) => {
    }
 
    activePlugins.push(
@@ -44,5 +44,13 @@ index fed5db1..27e0ae8 100644
 +    new TerserPlugin({
 +      terserOptions: {
          ecma,
-         compress: {
-           warnings: false,
+-        compress: {
+-          warnings: false,
+-          unused: true,
+-          dead_code: true
+-        },
++        compress: false,
++        mangle: false,
+         output: {
+           comments: false
+         }
