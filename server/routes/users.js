@@ -8,7 +8,7 @@ import { ArgumentError, ValidationError, UnauthorizedError } from 'auth0-extensi
 import config from '../lib/config';
 import logger from '../lib/logger';
 import { verifyUserAccess } from '../lib/middlewares';
-import { removeAllAuthenticationMethods, removeAuthenticationMethodsByType, requestAuthenticationMethods, requestGuardianEnrollments } from '../lib/removeGuardian';
+import { removeAllAuthenticationMethods, removeAuthenticationMethodsByType, requestAuthenticationMethods } from '../lib/removeGuardian';
 import { requestUserBlocks, removeUserBlocks } from '../lib/userBlocks';
 import getApiToken from '../lib/getApiToken';
 import getConnectionIdByName from '../lib/getConnectionIdByName';
@@ -339,44 +339,19 @@ export default (storage, scriptManager) => {
                 return accessToken;
               }))
           .then((accessToken) => {
-            return requestGuardianEnrollments(accessToken, req.params.id)
-              .then((enrollments) => {
-                if (data.user.multifactor && (!enrollments || !enrollments.length)) {
-                  data.user.multifactor = data.user.multifactor.filter(item => item !== 'guardian');
-                  data.user.multifactor = data.user.multifactor.length ? data.user.multifactor : null;
-                } else if (!data.user.multifactor && enrollments) {
-                  data.user.multifactor = ['guardian'];
-                }
-                return accessToken;
-              });
-          }).then(accessToken => {
-            const axios = require('axios');
-            let call_params = {
-              method: 'get',
-              maxBodyLength: Infinity,
-              url: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${user.user_id}/authentication-methods`,
-              headers: {
-                'Accept': 'application/json',
-                authorization: `Bearer ${accessToken}`
-              }
-            };
-            return axios.request(call_params)
-              .then((response) => {
-                const mfa = JSON.stringify(response.data);
-                const phoneData= response.data.find(item=>item.type === 'phone');
-                if(phoneData){
-                  data.user.phone_number = phoneData.phone_number;
-                }
-                return res.json(data);
-              })
-          })
-          .then((accessToken) => {
             return requestAuthenticationMethods(accessToken, req.params.id)
               .then((methods) => {
                 data.user.multifactor = Array.isArray(methods) && methods.length > 0
                   ? [...new Set(methods.map(m => m.type).filter(Boolean))]
                   : null;
-
+                
+                if (Array.isArray(methods)) {
+                  const phoneData = methods.find(method=>method.type==='phone');
+                  
+                  if(phoneData && phoneData.phone_number ) {
+                    data.user.phone_number = phoneData.phone_number;
+                  }
+                }
                 return res.json(data);
               });
           })
