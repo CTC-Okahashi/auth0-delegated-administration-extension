@@ -345,11 +345,30 @@ export default (storage, scriptManager) => {
                   data.user.multifactor = data.user.multifactor.filter(item => item !== 'guardian');
                   data.user.multifactor = data.user.multifactor.length ? data.user.multifactor : null;
                 } else if (!data.user.multifactor && enrollments) {
-                  data.user.multifactor = [ 'guardian' ];
+                  data.user.multifactor = ['guardian'];
                 }
-
                 return accessToken;
               });
+          }).then(accessToken => {
+            const axios = require('axios');
+            let call_params = {
+              method: 'get',
+              maxBodyLength: Infinity,
+              url: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${user.user_id}/authentication-methods`,
+              headers: {
+                'Accept': 'application/json',
+                authorization: `Bearer ${accessToken}`
+              }
+            };
+            return axios.request(call_params)
+              .then((response) => {
+                const mfa = JSON.stringify(response.data);
+                const phoneData= response.data.find(item=>item.type === 'phone');
+                if(phoneData){
+                  data.user.phone_number = phoneData.phone_number;
+                }
+                return res.json(data);
+              })
           })
           .then((accessToken) => {
             return requestAuthenticationMethods(accessToken, req.params.id)
